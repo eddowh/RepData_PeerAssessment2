@@ -91,7 +91,7 @@ names(newStorm)
 ```
 
 ### Row Filter
-The numeric values which will help conclude the answers to the questions posed will only be useful when it is quantified above zero, so certain rows will be filtered out from the data.
+The numeric values of columns, `FATALITIES`, `INJURIES`, `PROPDMG`, and `CROPDMG`, which will help conclude the answers to the questions posed - will only be useful when it is quantified above zero, so certain rows will be filtered out from the data.
 ```{r}
 ##  remove rows with no fatalities and confirm
 newStorm <- newStorm[with(newStorm, FATALITIES>0),]
@@ -109,7 +109,6 @@ head(unique(newStorm$PROPDMG)[order(unique(newStorm$PROPDMG))])
 newStorm <- newStorm[with(newStorm, CROPDMG>0),]
 head(unique(newStorm$CROPDMG)[order(unique(newStorm$CROPDMG))])
 ```
-
 
 
 # Results
