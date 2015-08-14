@@ -97,7 +97,63 @@ The numeric values of columns `FATALITIES`,`INJURIES`,`PROPDMG`, and `CROPDMG`, 
 newStorm <- subset(newStorm, !(FATALITIES<=0 & INJURIES<=0 &PROPDMG<=0 & CROPDMG<=0))
 ```
 
+### Event Type Regroup
+Let us examine the `EVTYPE` variable and see how many different event types we get out of it.
+```{r}
+##  list every different event types
+unique(newStorm$EVTYPE)
+```
+**`r length(unique(newStorm$EVTYPE))`** different event types sound like the data can be pretty specific with their labels. However, there are many potential regroupings that can be performed. The issues here are that some of them are not all capitalized, and that some have spaces here and there. The following one line of code should remedy the problem:
+```{r}
+##  transform column variable into uppercase character 
+newStorm$EVTYPE <- gsub("^ *", "",toupper(as.character(newStorm$EVTYPE)))
+```
+Then, some event types are abbreviated (or over-specified) when in fact it can potentially be regrouped as one, i.e. `TSTM WIND` is presumably indentical to `THUNDERSTORM WIND`. For convenience's sake, I plan to group any event type containing `TSTM` and `THUNDERSTORM` as simply `THUNDERSTORM`.
+```{r}
+##  regoup as one
+TSTM <- grep("TSTM", newStorm$EVTYPE)
+THUNDERSTORM <- grep("THUNDERSTORM", newStorm$EVTYPE)
+newStorm$EVTYPE[TSTM] <- "THUNDERSTORM"
+newStorm$EVTYPE[THUNDERSTORM] <- "THUNDERSTORM"
 
+##  confirm shortened event type list
+unique(newStorm$EVTYPE)
+```
+As one can see, the number of event types were reduced from **222** from **`r length(unique(newStorm$EVTYPE))`**.  
+Now, by inspection, other potential regroups involve FLD being abbreviated from FLOOD, and COLD, HEAT, DRY, and SNOW having labels that are overly specific. Needless to say, categorization can be done in many ways, but the demonstrated method is sufficiently simple, in order that redundacy and over-specifity is minimized. The following changes are made (with personal discretion) to regroup the rest of the list:
+```{r}
+##  identify key words
+FLD <- grep("FLD", newStorm$EVTYPE)
+FLOOD <- grep("FLOOD", newStorm$EVTYPE)
+COLD <- grep("COLD", newStorm$EVTYPE)
+DRY <- grep("DRY", newStorm$EVTYPE)
+HEAT <- grep("HEAT", newStorm$EVTYPE)
+SNOW <- grep("SNOW", newStorm$EVTYPE)
+RAIN <- grep("RAIN", newStorm$EVTYPE)
+RIP_CURRENT <- grep("RIP CURRENT", newStorm$EVTYPE)
+
+##  regroup accordingly
+newStorm$EVTYPE[FLD] <- "FLOOD"
+newStorm$EVTYPE[FLOOD] <- "FLOOD"
+newStorm$EVTYPE[COLD] <- "COLD"
+newStorm$EVTYPE[DRY] <- "DRY"
+newStorm$EVTYPE[HEAT] <- "HEAT"
+newStorm$EVTYPE[SNOW] <- "SNOW"
+newStorm$EVTYPE[RAIN] <- "RAIN"
+newStorm$EVTYPE[RIP_CURRENT] <- "RIP CURRENT"
+
+##  examine current list of event types
+unique(newStorm$EVTYPE)
+```
+The list seems pretty shortened right now, only approximately **`r as.integer(length(unique(newStorm$EVTYPE)) / 222 * 100)`**% of its original length.
+
+Of course, one can argue to regroup Wind, which can be defined and labeled pretty broadly. Let's examine whether Wind would be a good keyword for regrouping.
+```{r}
+##  search Wind as keyterm through list of event types (use unique function)
+wind <- grep("WIND", unique(newStorm$EVTYPE))
+unique(newStorm$EVTYPE)[wind]
+```
+As one can see, winds can have different levels of severity. Thus, in this data analysis, it is decided that wind is not regrouped as one. However, keep in mind that the displayed preference of categorization is subjective at best.
 
 # Results
 
