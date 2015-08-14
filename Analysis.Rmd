@@ -72,6 +72,23 @@ head(storm$BGN_DATE, 4)
 ```
 Since the dates are listed in chronological order, we can see that the data is indeed only 1996 onwards.
 
+Needless to say, some variables in the data would not contribute to the analysis that would answer the questions posed. Therefore, those columns have to be filtered out as well - but not before checking every variable and evaluating which ones to keep.
+```{r}
+##  display all variables
+names(storm)
+```
+From this, we can decide to keep only the variables shown below and accordingly filter into a new variable `newStorm`:
+```{r}
+##  create character vector of useful variables
+neededCols <- c("BGN_DATE", "STATE", "EVTYPE", "BGN_LOCATI", "FATALITIES", "INJURIES", "PROPDMG", "PROPDMGEXP", "CROPDMG", "CROPDMGEXP", "REMARKS", "REFNUM")
+
+##  filter variables in storm data
+newStorm <- storm[, neededCols]
+
+##  confirm variable column filter
+names(newStorm)
+```
+
 
 # Results
 
