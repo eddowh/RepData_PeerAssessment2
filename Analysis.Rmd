@@ -72,6 +72,7 @@ head(storm$BGN_DATE, 4)
 ```
 Since the dates are listed in chronological order, we can see that the data is indeed only 1996 onwards.
 
+### Column Filter
 Needless to say, some variables in the data would not contribute to the analysis that would answer the questions posed. Therefore, those columns have to be filtered out as well - but not before checking every variable and evaluating which ones to keep.
 ```{r}
 ##  display all variables
