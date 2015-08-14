@@ -90,6 +90,27 @@ newStorm <- storm[, neededCols]
 names(newStorm)
 ```
 
+### Row Filter
+The numeric values which will help conclude the answers to the questions posed will only be useful when it is quantified above zero, so certain rows will be filtered out from the data.
+```{r}
+##  remove rows with no fatalities and confirm
+newStorm <- newStorm[with(newStorm, FATALITIES>0),]
+head(unique(newStorm$FATALITIES)[order(unique(newStorm$FATALITIES))])
+
+##  remove rows with no injuries and confirm
+newStorm <- newStorm[with(newStorm, INJURIES>0),]
+head(unique(newStorm$INJURIES)[order(unique(newStorm$INJURIES))])
+
+##  remove rows with no property damage and confirm
+newStorm <- newStorm[with(newStorm, PROPDMG>0),]
+head(unique(newStorm$PROPDMG)[order(unique(newStorm$PROPDMG))])
+
+##  remove rows with no crop damage and confirm
+newStorm <- newStorm[with(newStorm, CROPDMG>0),]
+head(unique(newStorm$CROPDMG)[order(unique(newStorm$CROPDMG))])
+```
+
+
 
 # Results
 
