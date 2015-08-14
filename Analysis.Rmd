@@ -3,6 +3,7 @@ title: "NOAA Storm Data Analysis - Most Harmful and Most Expensive Storm Events"
 author: "Eddo W. Hintoso"
 date: "August 14, 2015"
 output: html_document
+    keep_md: true
 ---
 
 # Synopsis
@@ -43,7 +44,21 @@ storm <- tbl_df(storm)
 ```
 
 ## Cleaning the Data
+According to the [information](http://www.ncdc.noaa.gov/stormevents/details.jsp) on the Storm Events Database provided, the events types available are:  
+1. *Tornado*: From 1950 through 1954, only tornado events were recorded.  
+2. *Tornado, Thunderstorm Wind and Hail*: From 1955 through 1992, only tornado, thunderstorm wind and hail events were keyed from the paper publications into digital data. From 1993 to 1995, only tornado, thunderstorm wind and hail events have been extracted from the [Unformatted Text Files](http://www.ncdc.noaa.gov/stormevents/details.jsp?type=collection).  
+3. *All Event Types (48 from Directive 10-1605)*: From 1996 to present, 48 event types are recorded as defined in [NWS Directive 10-1605](http://www.ncdc.noaa.gov/stormevents/pd01016005curr.pdf). 
 
+As mentioned in the synopsis before, only storm data from 1996 to 2011 was used, in order to minimize bias due to limited data being collect in previous years. Using recent data also minimized the effects of inflation on the cost of the damage due to the events. But first, we need to check if the dates stored are in the `Date` format.
+```{r}
+##  transform BGN_DATE into Date format
+if (class(storm$BGN_DATE) != "Date") {
+    storm <- transform(storm, BGN_DATE = as.Date(storm$BGN_DATE, format = "%m/%d/%Y"))
+}
+
+##  confirm BGN_DATE is in Date format
+class(storm$BGN_DATE)
+```
 
 # Results
 
