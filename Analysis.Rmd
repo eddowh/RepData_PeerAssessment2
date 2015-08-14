@@ -2,7 +2,8 @@
 title: "NOAA Storm Data Analysis - Most Harmful and Most Expensive Storm Events"
 author: "Eddo W. Hintoso"
 date: "August 14, 2015"
-output: html_document
+output: 
+  html_document:
     keep_md: true
 ---
 
