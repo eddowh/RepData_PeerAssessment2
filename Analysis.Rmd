@@ -157,7 +157,24 @@ As one can see, winds can have different levels of severity. Thus, in this data 
 
 # Results
 
+## Types of events that are most harmful with respect to Population Health
+```{r}
+##  sum all the data up and save new data into new variable
+harmHealth <- with(newStorm, aggregate(list(Total_Fatalities = FATALITIES,
+                                            Total_Injuries = INJURIES), 
+                                       list(Event_Type = EVTYPE),
+                                       sum))
 
+##  arrange data in descending order of total fatalities
+fatalities <- arrange(harmHealth, desc(Total_Fatalities))
+injuries <- arrange(harmHealth, desc(Total_Injuries))
+
+##  display top 10 for inflicting fatality
+head(fatalities, 10)
+
+##  display top 10 for inflicting injuries
+head(injuries, 10)
+```
 
 # Software & Hardware Conditions
 ```{r}
