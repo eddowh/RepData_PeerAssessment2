@@ -54,12 +54,24 @@ As mentioned in the synopsis before, only storm data from 1996 to 2011 was used,
 ```{r}
 ##  transform BGN_DATE into Date format
 if (class(storm$BGN_DATE) != "Date") {
-    storm <- transform(storm, BGN_DATE = as.Date(storm$BGN_DATE, format = "%m/%d/%Y"))
+    storm <- tbl_df(transform(storm, BGN_DATE = as.Date(storm$BGN_DATE, format = "%m/%d/%Y")))
 }
 
 ##  confirm BGN_DATE is in Date format
 class(storm$BGN_DATE)
 ```
+
+Now, to filter out the data before 1996,
+```{r}
+##  set cutoff date and filter
+dateCutoff <- as.Date("1996-01-01", format = "%Y-%m-%d")
+storm <- subset(storm, BGN_DATE >= dateCutoff)
+
+##  confirm date is from 1996-01-01 onwards
+head(storm$BGN_DATE, 4)
+```
+Since the dates are listed in chronological order, we can see that the data is indeed only 1996 onwards.
+
 
 # Results
 
