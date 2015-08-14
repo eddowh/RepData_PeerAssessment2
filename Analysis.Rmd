@@ -91,21 +91,17 @@ names(newStorm)
 ```
 
 ### Row Filter
-The numeric values of columns, `FATALITIES`, `INJURIES`, `PROPDMG`, and `CROPDMG`, which will help conclude the answers to the questions posed - will only be useful when it is quantified above zero, so certain rows will be filtered out from the data.
+The numeric values of columns `FATALITIES`,`INJURIES`,`PROPDMG`, and `CROPDMG`, will be no of use when all of them are equal to 0, since it is quantifiably speaking, not contributing to the harm of population health or the economy. That being said, certain rows will be filtered out from the data.
 ```{r}
-##  remove rows with no fatalities + injuries and confirm
-newStorm <- newStorm[with(newStorm, FATALITIES>0 & INJURIES>0),]
-head(unique(newStorm$FATALITIES)[order(unique(newStorm$FATALITIES))])
-head(unique(newStorm$INJURIES)[order(unique(newStorm$INJURIES))])
-
-##  remove rows with no property + crop damage and confirm
-newStorm <- newStorm[with(newStorm, PROPDMG>0 & CROPDMG>0),]
-head(unique(newStorm$PROPDMG)[order(unique(newStorm$PROPDMG))])
-head(unique(newStorm$CROPDMG)[order(unique(newStorm$CROPDMG))])
+##  remove rows with no damage whatsoever
+newStorm <- subset(newStorm, !(FATALITIES<=0 & INJURIES<=0 &PROPDMG<=0 & CROPDMG<=0))
 ```
 
 
+
 # Results
+
+
 
 # Software & Hardware Conditions
 ```{r}
