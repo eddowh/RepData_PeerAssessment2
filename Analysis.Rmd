@@ -1,0 +1,53 @@
+---
+title: "NOAA Storm Data Analysis - Most Harmful and Most Expensive Storm Events"
+author: "Eddo W. Hintoso"
+date: "August 14, 2015"
+output: html_document
+---
+
+# Synopsis
+This data analysis attempts to address the following questions:  
+1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?  
+2. Across the United States, which types of events have the greatest economic consequences?
+
+The U.S. National Oceanic and Atmospheric Administration’s (NOAA) storm database was analysed to answer these questions. Storm data from 1996 to 2011 was used, in order to minimize bias due to limited data being collect in previous years. Using recent data also minimized the effects of inflation on the cost of the damage due to the events.
+
+To see the software conditions used to complete this data analysis, see the section **Software Conditions**.
+
+**NOTE**: The global options are set to cache the computations so that the `.Rmd` file can be knitted to HTML faster.
+```{r setoptions}
+library(knitr)
+opts_chunk$set(cache = TRUE)
+```
+
+# Data Processing
+
+## Validating Pre-Existence of Data
+```{r}
+##  check if file exists; if not, download the file again
+if(!file.exists("repdata-data-StormData.csv.bz2")){
+    message("Downloading data")
+    fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+    download.file(fileURL, destfile = "./repdata-data-StormData.csv.bz2", method = "curl")
+}
+```
+
+## Reading the Data
+```{r}
+##  read data
+storm <- read.csv('repdata-data-StormData.csv.bz2')
+
+##  store it as 'tbl_df' for faster processing
+library(dplyr)
+storm <- tbl_df(storm)
+```
+
+## Cleaning the Data
+
+
+# Results
+
+# Software & Hardware Conditions
+```{r}
+sessionInfo()
+```
