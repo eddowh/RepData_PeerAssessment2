@@ -187,7 +187,35 @@ topInjuries <- head(injuries, 10)
 topInjuries
 ```
 
+## Types of events that have the greatest economic consequences
+There are two types of damage categorise. Damage to property (PROPDMG) and damage to crops (CROPDMG). These are in two separate fields, with multipliers (PROPDMGEXP, CROPDMGEXP) that indicate how much to multiply the damage field by.
 
+There are three values for the multiplier.  
+- K = Thousands  
+- M = Millions  
+- B = Billions  
+
+Calculate the total cost of damage by adding the cost of property damage and crop damage.
+```{r}
+##  load 'car' package for recode function
+library(car)
+
+##  define numeric converter
+numConvert <- "'B'=1000000000; 'M'=1000000; 'K'=1000"
+
+##  transform variable columns of multipliers to character form
+newStorm$PROPDMGEXP <- as.character(newStorm$PROPDMGEXP)
+newStorm$CROPDMGEXP <- as.character(newStorm$CROPDMGEXP)
+
+##  create new variable column for numeric multiplier
+newStorm$PROPDMGMULT <- as.numeric(recode(newStorm$PROPDMGEXP, numConvert))
+newStorm$CROPDMGMULT <- as.numeric(recode(newStorm$CROPDMGEXP, numConvert))
+
+##  create new variable column for total damage incurred
+newStorm$PROPDMGTOT <- with(newStorm, PROPDMG * PROPDMGMULT)
+newStorm$CROPDMGTOT <- with(newStorm, CROPDMG * CROPDMGMULT)
+newStorm$DMGTOT <- with(newStorm, PROPDMGTOT + CROPDMGTOT)
+```
 
 # Software & Hardware Conditions
 ```{r}
