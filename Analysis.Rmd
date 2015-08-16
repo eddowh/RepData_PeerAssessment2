@@ -158,23 +158,36 @@ As one can see, winds can have different levels of severity. Thus, in this data 
 # Results
 
 ## Types of events that are most harmful with respect to Population Health
+The two variables that contribute to population health are `FATALITIES` and `INJURIES`.
 ```{r}
 ##  sum all the data up and save new data into new variable
 harmHealth <- with(newStorm, aggregate(list(Total_Fatalities = FATALITIES,
-                                            Total_Injuries = INJURIES), 
+                                            Percent_Fatality = 0,
+                                            Total_Injuries = INJURIES,
+                                            Percent_Injury = 0),
                                        list(Event_Type = EVTYPE),
                                        sum))
+
+##  define percentage rates
+harmHealth$Percent_Fatality <- with(harmHealth,
+                                    round(Total_Fatalities / sum(Total_Fatalities) * 100, digits = 3))
+harmHealth$Percent_Injury <- with(harmHealth,
+                                    round(Total_Injuries / sum(Total_Injuries) * 100, digits = 3))
 
 ##  arrange data in descending order of total fatalities
 fatalities <- arrange(harmHealth, desc(Total_Fatalities))
 injuries <- arrange(harmHealth, desc(Total_Injuries))
 
 ##  display top 10 for inflicting fatality
-head(fatalities, 10)
+topFatalities <- head(fatalities, 10)
+topFatalities
 
 ##  display top 10 for inflicting injuries
-head(injuries, 10)
+topInjuries <- head(injuries, 10)
+topInjuries
 ```
+
+
 
 # Software & Hardware Conditions
 ```{r}
