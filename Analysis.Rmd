@@ -131,6 +131,7 @@ HEAT <- grep("HEAT", newStorm$EVTYPE)
 SNOW <- grep("SNOW", newStorm$EVTYPE)
 RAIN <- grep("RAIN", newStorm$EVTYPE)
 RIP_CURRENT <- grep("RIP CURRENT", newStorm$EVTYPE)
+HURRICANE <- grep("HURRICANE", newStorm$EVTYPE)
 
 ##  regroup accordingly
 newStorm$EVTYPE[FLD] <- "FLOOD"
@@ -141,6 +142,7 @@ newStorm$EVTYPE[HEAT] <- "HEAT"
 newStorm$EVTYPE[SNOW] <- "SNOW"
 newStorm$EVTYPE[RAIN] <- "RAIN"
 newStorm$EVTYPE[RIP_CURRENT] <- "RIP CURRENT"
+newStorm$EVTYPE[HURRICANE] <- "HURRICANE"
 
 ##  examine current list of event types
 unique(newStorm$EVTYPE)
@@ -216,6 +218,32 @@ newStorm$PROPDMGTOT <- with(newStorm, PROPDMG * PROPDMGMULT)
 newStorm$CROPDMGTOT <- with(newStorm, CROPDMG * CROPDMGMULT)
 newStorm$DMGTOT <- with(newStorm, PROPDMGTOT + CROPDMGTOT)
 ```
+
+Assemble total damage data for each event type:
+```{r}
+##  sum all the data up and save new data into new variable
+harmEcon <- with(newStorm, aggregate(list(Total_Damage = DMGTOT,
+                                          Percent_Damage = 0),
+                                     list(Event_Type = EVTYPE),
+                                     sum,
+                                     na.rm = TRUE))
+
+##  define percentage rates
+harmEcon$Percent_Damage <- with(harmEcon,
+                                round(Total_Damage / sum(Total_Damage) * 100, digits = 3))
+
+##  arrange data in descending order of total damage
+harmEcon <- arrange(harmEcon, desc(Total_Damage))
+
+##  convert total damage column into scientific notation
+harmEcon$Total_Damage <- format(harmEcon$Total_Damage, digits = 4, scientific = TRUE)
+
+##  display top 10 for results
+topDamage <- head(harmEcon, 10)
+topDamage
+```
+
+
 
 # Software & Hardware Conditions
 ```{r}
