@@ -243,6 +243,93 @@ topDamage <- head(harmEcon, 10)
 topDamage
 ```
 
+It does seem very odd somehow that the total damage incurred by floods is actually greater than that incurred by hurricanes; it might be prudent to investigate the data behind this.
+```{r}
+##  filter out flood data to check discrepancies
+flood <- subset(newStorm,
+                EVTYPE == "FLOOD" & !is.na(DMGTOT))
+
+##  load 'lubridate' package for extracting year from date
+library(lubridate)
+
+##  assemble flood data by year
+floodYear <- with(flood, aggregate(list(Total_Damage = DMGTOT),
+                                   list(Year = year(BGN_DATE)),
+                                   sum,
+                                   na.rm = TRUE))
+
+##  view flood data by year
+floodYear
+```
+There is an obvious discrepancy in the data, but let's plot it to see it visually.
+
+```{r}
+##  plot flood data by year
+with(floodYear,
+     plot(x = Year,
+          xlab = "Year",
+          xaxp = c(1996,2012, 2012-1996),
+          y = Total_Damage / 1e9,
+          ylab = "Total Cost (in Billions USD)",
+          las = 1,    # display y-axis data labels upright
+          pch = 16, cex = 2, col = "red",
+          main = "Total Damage Cost of Floods by Year"))
+```
+
+Let's investigate further into why there's such a huge outlier.
+```{r}
+##  extract row with maximum flood damage
+maxFlood <- flood[flood$DMGTOT == max(flood$DMGTOT), ]
+
+##  display maxFlood as just data frame instead of tbl_df to display all columns
+data.frame(maxFlood)
+```
+
+We can see here that the property damage multiplier is in the billions (B), and the property damage is 115, totaling up to around 115 Billion USD - that is greater than the total damage per year in other years! Let's see what the data remarks have to say about that:  
+*"`r as.character(maxFlood$REMARKS)`"*
+
+The remarks only mentioned damages in the tens of millions. This confirms the suspicion that the damage multiplier is mis-reported as in the billions, instead of in the millions. This data will have to be fixed.
+```{r}
+##  correct property damage multiplier
+newStorm[newStorm$REFNUM == maxFlood$REFNUM, ]$PROPDMGEXP <- "M"
+
+##  run conversion code again
+
+##  transform variable columns of multipliers to character form
+newStorm$PROPDMGEXP <- as.character(newStorm$PROPDMGEXP)
+newStorm$CROPDMGEXP <- as.character(newStorm$CROPDMGEXP)
+
+##  create new variable column for numeric multiplier
+newStorm$PROPDMGMULT <- as.numeric(recode(newStorm$PROPDMGEXP, numConvert))
+newStorm$CROPDMGMULT <- as.numeric(recode(newStorm$CROPDMGEXP, numConvert))
+
+##  create new variable column for total damage incurred
+newStorm$PROPDMGTOT <- with(newStorm, PROPDMG * PROPDMGMULT)
+newStorm$CROPDMGTOT <- with(newStorm, CROPDMG * CROPDMGMULT)
+newStorm$DMGTOT <- with(newStorm, PROPDMGTOT + CROPDMGTOT)
+
+##  sum all the data up and save new data into new variable
+harmEcon <- with(newStorm, aggregate(list(Total_Damage = DMGTOT,
+                                          Percent_Damage = 0),
+                                     list(Event_Type = EVTYPE),
+                                     sum,
+                                     na.rm = TRUE))
+
+##  define percentage rates
+harmEcon$Percent_Damage <- with(harmEcon,
+                                round(Total_Damage / sum(Total_Damage) * 100, digits = 3))
+
+##  arrange data in descending order of total damage
+harmEcon <- arrange(harmEcon, desc(Total_Damage))
+
+##  convert total damage column into scientific notation
+harmEcon$Total_Damage <- format(harmEcon$Total_Damage, digits = 4, scientific = TRUE)
+
+##  display top 10 for results
+topDamage <- head(harmEcon, 10)
+topDamage
+```
+The corrected data makes much more sense now, with the top 10 damages responsible for **`r sum(topDamage$Percent_Damage)`%** of total damages, and hurricanes accounting for **`r topDamage$Percent_Damage[1]`%**.
 
 
 # Software & Hardware Conditions
