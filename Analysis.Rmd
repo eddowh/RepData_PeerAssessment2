@@ -329,7 +329,11 @@ harmEcon$Total_Damage <- format(harmEcon$Total_Damage, digits = 4, scientific = 
 topDamage <- head(harmEcon, 10)
 topDamage
 ```
-The corrected data makes much more sense now, with the top 10 damages responsible for **`r sum(topDamage$Percent_Damage)`%** of total damages, and hurricanes accounting for **`r topDamage$Percent_Damage[1]`%**.
+The corrected data makes much more sense now, with the top 10 damages responsible for **`r sum(topDamage$Percent_Damage)`%** of total damages, and hurricanes accounting for **`r topDamage$Percent_Damage[1]`%** as the most harmful event in terms of economic damages.
+
+# Conclusion
+**Heat** is the most *fatal* event, while **tornadoes** are capable of inflicting the most *injuries*.  
+In terms of economic costs, **hurricanes** are the most *destructive*.
 
 
 # Software & Hardware Conditions
